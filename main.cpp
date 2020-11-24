@@ -1,14 +1,14 @@
 #include <iostream>
 #include "LinkedList.h"
 
+using namespace std;
+
+/**
+ * \brief Точка входа в программу.
+ * \return Код ошибки. 0 -- всё хорошо.
+ */
 int main()
 {
-    // LinkedList<int> list = { 1, 2, 3, 4, 5 };
-
-    // LinkedList<int> l1;
-    // LinkedList<int> l2 = l1;
-    // LinkedList<int> l3(l1);
-
     auto list = LinkedList<int>();
     list.Add(1);
     list.Add(2);
@@ -20,20 +20,21 @@ int main()
     ptr->AddBack(6).AddBack(7);
     // x->y <=> (*x).y
 
-    std::cout << list << std::endl;
+    cout << list << endl;
 
-    LinkedList<int> tmp = { 1,2,3,4,5};
-    std::cout << tmp << std::endl;
+    LinkedList<int> tmp = { 1, 2, 3, 4, 5 };
+    cout << tmp << endl;
 
-    auto it = list.cbegin();
-    while (it != list.cend())
+    cout << endl << "for: ";
+    for (auto& it : list)
     {
-        std::cout << *it << ", ";
-        ++it;
+        cout << it << ", ";
     }
-    std::cout << std::endl;
+    cout << endl;
 
-    std::for_each(tmp.cbegin(), tmp.cend(),
-        [tmp](const int item) {std::cout << item << ","; });
+    cout << endl << "for_each: ";
+    for_each(tmp.begin(), tmp.end(), [](const int item) { cout << item << ", "; });
+    cout << endl;
+
     return 0;
 }
