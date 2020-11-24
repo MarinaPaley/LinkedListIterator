@@ -1,5 +1,6 @@
 #pragma once
 #include <ostream>
+#include <algorithm>
 
 template <class T>
 class LinkedList;
@@ -15,6 +16,7 @@ class ListItem
 {
     friend class LinkedList<T>;
     friend class Iterator<T>;
+
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
 
     explicit ListItem(const T& value);
@@ -40,16 +42,19 @@ public:
 
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
 
+
     ~LinkedList();
 
     T& GetFirst();
     const T& GetFirst() const;
     void Add(const T& value);
-    LinkedList<T>* AddBack(const T& value);
+    LinkedList<T>& AddBack(const T& value);
     void RemoveFirst();
 
     bool IsEmpty() const;
 
+    Iterator<T> cbegin();
+    Iterator<T> cend();
 
 private:
     ListItem<T>* head;
@@ -74,12 +79,14 @@ LinkedList<T>::LinkedList(const LinkedList& list):
 template <class T>
 LinkedList<T>::LinkedList(std::initializer_list<T> other)
 {
-    const auto* tmp = other.begin();
-    while (tmp != other.end())
-    {
-        this->Add(*tmp);
-        ++tmp;
-    }
+    //const auto* tmp = other.begin();
+    //while (tmp != other.end())
+    //{
+    //    this->Add(*tmp);
+    //    ++tmp;
+    //}
+
+   std::for_each(other.begin(), other.end(), [this](const T item) { this->Add(item); });
 }
 
 template <class T>
@@ -143,10 +150,10 @@ void LinkedList<T>::Add(const T& value)
 }
 
 template <class T>
-LinkedList<T>* LinkedList<T>::AddBack(const T& value)
+LinkedList<T>& LinkedList<T>::AddBack(const T& value)
 {
     this->Add(value);
-    return this;
+    return *this;
 }
 
 template <class T>
@@ -167,6 +174,18 @@ bool LinkedList<T>::IsEmpty() const
 }
 
 template <class T>
+Iterator<T> LinkedList<T>::cbegin()
+{
+    return Iterator<T>(this->head);
+}
+
+template <class T>
+Iterator<T> LinkedList<T>::cend()
+{
+    return Iterator<T>(this->tail->next);
+}
+
+template <class T>
 void LinkedList<T>::Destroy()
 {
     while(!this->IsEmpty())
@@ -184,4 +203,59 @@ void LinkedList<T>::CopyElements(const LinkedList<T>& other)
         this->Add(current->value);
         current = current->next;
     }
+}
+
+template <class T>
+class Iterator
+{
+public:
+    Iterator(ListItem<T>* item);
+    Iterator(const Iterator& other);
+
+    bool operator == (Iterator const& other) const;
+    bool operator != (Iterator const& other) const;
+    Iterator operator++();
+    T& operator *() const;
+
+    friend class LinkedList<T>;
+
+private:
+    ListItem<T>* current;
+};
+
+template <class T>
+Iterator<T>::Iterator(ListItem<T>* item)
+{
+    this->current = item;
+}
+
+template<class T>
+inline Iterator<T>::Iterator(const Iterator & other)
+{
+    this->current = other.current;
+}
+
+template <class T>
+bool Iterator<T>::operator==(Iterator const& other) const
+{
+    return (this->current == other.current);
+}
+
+template <class T>
+bool Iterator<T>::operator!=(Iterator const& other) const
+{
+    return (this->current != other.current);
+}
+
+template <class T>
+Iterator<T> Iterator<T>::operator++()
+{
+    this->current = this->current->next;
+    return Iterator<T>(this->current);
+}
+
+template <class T>
+T& Iterator<T>::operator*() const
+{
+    return this->current->value;
 }
