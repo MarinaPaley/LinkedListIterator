@@ -30,6 +30,8 @@ public:
     LinkedList();
     LinkedList(const LinkedList<T>& list);
 
+    LinkedList(std::initializer_list<T> other);
+
     LinkedList<T>& operator= (const LinkedList<T>& other);
 
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
@@ -62,6 +64,17 @@ LinkedList<T>::LinkedList(const LinkedList& list):
     head(nullptr),tail(nullptr)
 {
     this->CopyElements(list);
+}
+
+template <class T>
+LinkedList<T>::LinkedList(std::initializer_list<T> other)
+{
+    const auto* tmp = other.begin();
+    while (tmp != other.end())
+    {
+        this->Add(*tmp);
+        ++tmp;
+    }
 }
 
 template <class T>

@@ -13,8 +13,13 @@ int main()
     list.Add(1);
     list.Add(2);
     list.Add(3);
+    list.AddBack(4)
+        ->AddBack(5);
 
     std::cout << list << std::endl;
+
+    const LinkedList<int> tmp = { 1,2,3,4,5};
+    std::cout << tmp << std::endl;
 
     return 0;
 }
