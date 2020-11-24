@@ -53,8 +53,8 @@ public:
 
     bool IsEmpty() const;
 
-    Iterator<T> cbegin();
-    Iterator<T> cend();
+    Iterator<T> begin();
+    Iterator<T> end();
 
 private:
     ListItem<T>* head;
@@ -79,13 +79,6 @@ LinkedList<T>::LinkedList(const LinkedList& list):
 template <class T>
 LinkedList<T>::LinkedList(std::initializer_list<T> other)
 {
-    //const auto* tmp = other.begin();
-    //while (tmp != other.end())
-    //{
-    //    this->Add(*tmp);
-    //    ++tmp;
-    //}
-
    std::for_each(other.begin(), other.end(), [this](const T item) { this->Add(item); });
 }
 
@@ -174,13 +167,13 @@ bool LinkedList<T>::IsEmpty() const
 }
 
 template <class T>
-Iterator<T> LinkedList<T>::cbegin()
+Iterator<T> LinkedList<T>::begin()
 {
     return Iterator<T>(this->head);
 }
 
 template <class T>
-Iterator<T> LinkedList<T>::cend()
+Iterator<T> LinkedList<T>::end()
 {
     return Iterator<T>(this->tail->next);
 }
