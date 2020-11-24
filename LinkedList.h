@@ -7,10 +7,14 @@ class LinkedList;
 template <class Type>
 std::ostream& operator<<(std::ostream&, const LinkedList<Type>&);
 
+template <class T>
+class Iterator;
+
 template<class T>
 class ListItem
 {
     friend class LinkedList<T>;
+    friend class Iterator<T>;
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
 
     explicit ListItem(const T& value);
@@ -45,6 +49,7 @@ public:
     void RemoveFirst();
 
     bool IsEmpty() const;
+
 
 private:
     ListItem<T>* head;
