@@ -1,13 +1,17 @@
 #pragma once
-#include <initializer_list>
+#include <ostream>
 
 template <class T>
 class LinkedList;
+
+template <class Type>
+std::ostream& operator<<(std::ostream&, const LinkedList<Type>&);
 
 template<class T>
 class ListItem
 {
     friend class LinkedList<T>;
+    friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
 
     explicit ListItem(const T& value);
     T value;
@@ -24,24 +28,29 @@ class LinkedList
 {
 public:
     LinkedList();
-    LinkedList(const LinkedList& list);
+    LinkedList(const LinkedList<T>& list);
 
     LinkedList<T>& operator= (const LinkedList<T>& other);
+
+    friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
 
     ~LinkedList();
 
     T& GetFirst();
     const T& GetFirst() const;
     void Add(const T& value);
+    LinkedList<T>* AddBack(const T& value);
     void RemoveFirst();
 
     bool IsEmpty() const;
+
 private:
     ListItem<T>* head;
     ListItem<T>* tail;
     void Destroy();
-    void CopyElements(const LinkedList&);
+    void CopyElements(const LinkedList<T>&);
 };
+
 
 template <class T>
 LinkedList<T>::LinkedList(): head(nullptr), tail(nullptr)
@@ -60,9 +69,25 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other)
 {
     if (*this != other)
     {
+        this->Destroy();
         this->CopyElements(other);
     }
     return *this;
+}
+
+template <class T>
+std::ostream& operator<< (std::ostream& out, const LinkedList<T>& list)
+{
+    out << "{ ";
+    auto current = list.head;
+    while (current->next != nullptr)
+    {
+        out << current->value << ", ";
+        current = current->next;
+    }
+    return out << current->value
+               << " }"
+               << std::endl;
 }
 
 template <class T>
@@ -86,17 +111,24 @@ const T& LinkedList<T>::GetFirst() const
 template <class T>
 void LinkedList<T>::Add(const T& value)
 {
-    auto newItem = new ListItem<T>(value);;
+    auto item = new ListItem<T>(value);
     if (this->IsEmpty())
     {
-        this->head = newItem;
-        this->tail = newItem;
+        this->head = item;
+        this->tail = item;
     }
     else
     {
-        this->tail->next= newItem;
-        this->tail = newItem;
+        this->tail->next= item;
+        this->tail = item;
     }
+}
+
+template <class T>
+LinkedList<T>* LinkedList<T>::AddBack(const T& value)
+{
+    this->Add(value);
+    return this;
 }
 
 template <class T>
@@ -126,7 +158,7 @@ void LinkedList<T>::Destroy()
 }
 
 template <class T>
-void LinkedList<T>::CopyElements(const LinkedList& other)
+void LinkedList<T>::CopyElements(const LinkedList<T>& other)
 {
     auto current = other.head;
     while(current != nullptr)
