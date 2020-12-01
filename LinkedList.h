@@ -56,6 +56,9 @@ public:
     Iterator<T> begin();
     Iterator<T> end();
 
+    Iterator<const T> cbegin();
+    Iterator<const T> cend();
+
 private:
     ListItem<T>* head;
     ListItem<T>* tail;
@@ -179,6 +182,18 @@ Iterator<T> LinkedList<T>::end()
 }
 
 template <class T>
+Iterator<const T> LinkedList<T>::cbegin()
+{
+    return Iterator<const T>(reinterpret_cast<ListItem<const T>*>(this->head));
+}
+
+template <class T>
+Iterator<const T> LinkedList<T>::cend()
+{
+    return Iterator<const T>(reinterpret_cast<ListItem<const T>*>(this->tail->next));
+}
+
+template <class T>
 void LinkedList<T>::Destroy()
 {
     while(!this->IsEmpty())
@@ -202,12 +217,13 @@ template <class T>
 class Iterator
 {
 public:
-    Iterator(ListItem<T>* item);
-    Iterator(const Iterator& other);
+    explicit Iterator(ListItem<T>* item);
+    Iterator(const Iterator<T>& other);
 
-    bool operator == (Iterator const& other) const;
-    bool operator != (Iterator const& other) const;
-    Iterator operator++();
+    bool operator == (Iterator<T> const& other) const;
+    bool operator != (Iterator<T> const& other) const;
+    Iterator<T> operator++();
+    T& operator *();
     T& operator *() const;
 
     friend class LinkedList<T>;
@@ -223,19 +239,19 @@ Iterator<T>::Iterator(ListItem<T>* item)
 }
 
 template<class T>
-inline Iterator<T>::Iterator(const Iterator & other)
+Iterator<T>::Iterator(const Iterator<T> & other)
 {
     this->current = other.current;
 }
 
 template <class T>
-bool Iterator<T>::operator==(Iterator const& other) const
+bool Iterator<T>::operator==(Iterator<T> const& other) const
 {
     return (this->current == other.current);
 }
 
 template <class T>
-bool Iterator<T>::operator!=(Iterator const& other) const
+bool Iterator<T>::operator!=(Iterator<T> const& other) const
 {
     return (this->current != other.current);
 }
@@ -245,6 +261,12 @@ Iterator<T> Iterator<T>::operator++()
 {
     this->current = this->current->next;
     return Iterator<T>(this->current);
+}
+
+template <class T>
+T& Iterator<T>::operator*()
+{
+    return this->current->value;
 }
 
 template <class T>

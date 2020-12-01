@@ -36,5 +36,12 @@ int main()
     for_each(tmp.begin(), tmp.end(), [](const int item) { cout << item << ", "; });
     cout << endl;
 
+    cout << endl << "for with const_iterator: ";
+    for (auto it = list.cbegin(); it != list.cend(); ++it)
+    {
+        cout << *it << ", ";
+    }
+    cout << endl;
+
     return 0;
 }
