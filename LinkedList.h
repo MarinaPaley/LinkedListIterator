@@ -1,12 +1,22 @@
 #pragma once
 #include <ostream>
 #include <algorithm>
+#include <sstream>
 
 template <class T>
 class LinkedList;
 
 template <class Type>
 std::ostream& operator<<(std::ostream&, const LinkedList<Type>&);
+
+template <class Type>
+std::wostream& operator<<(std::wostream&, const LinkedList<Type>&);
+
+template <class T>
+std::wstring ToString(const LinkedList<T>& obj);
+
+template <class Type>
+bool operator==(const LinkedList<Type>& lha, const LinkedList<Type>& rha);
 
 template <class T>
 class Iterator;
@@ -18,6 +28,9 @@ class ListItem
     friend class Iterator<T>;
 
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
+    friend std::wostream& operator<< <T> (std::wostream&, const LinkedList<T>&);
+
+    friend bool operator== <T> (const LinkedList<T>& lha, const LinkedList<T>& rha);
 
     explicit ListItem(const T& value);
     T value;
@@ -41,7 +54,9 @@ public:
     LinkedList<T>& operator= (const LinkedList<T>& other);
 
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
+    friend std::wostream& operator<< <T> (std::wostream&, const LinkedList<T>&);
 
+    friend bool operator== <T> (const LinkedList<T>& lha, const LinkedList<T>& rha);
 
     ~LinkedList();
 
@@ -97,6 +112,31 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other)
 }
 
 template <class T>
+bool operator==(LinkedList<T>& lha, LinkedList<T>& rha)
+{
+    // TODO: если |lha| > |rha|, то будет БУМ!
+    return std::equal(lha.begin(), lha.end(), rha.begin());
+}
+
+template <class T>
+bool operator==(const LinkedList<T>& lha, const LinkedList<T>& rha)
+{
+    auto current_lha = lha.head;
+    auto current_rha = rha.head;
+    while (current_lha != nullptr && current_rha != nullptr)
+    {
+        if (current_lha->value != current_rha->value)
+        {
+            return false;
+        }
+
+        current_lha = current_lha->next;
+        current_rha = current_rha->next;
+    }
+    return current_lha == current_rha;
+}
+
+template <class T>
 std::ostream& operator<< (std::ostream& out, const LinkedList<T>& list)
 {
     if (list.IsEmpty())
@@ -112,6 +152,34 @@ std::ostream& operator<< (std::ostream& out, const LinkedList<T>& list)
         current = current->next;
     }
     return out << current->value << " }";
+}
+
+template <class T>
+std::wostream& operator<< (std::wostream& out, const LinkedList<T>& list)
+{
+    if (list.IsEmpty())
+    {
+        return out << L"{ }";
+    }
+
+    out << L"{ ";
+    auto current = list.head;
+    while (current->next != nullptr)
+    {
+        // TODO: проблема с wostream << string
+        out << current->value << L", ";
+        current = current->next;
+    }
+    // TODO: проблема с wostream << string
+    return out << current->value << L" }";
+}
+
+template <class T>
+std::wstring ToString(const LinkedList<T>& obj)
+{
+    std::wstringstream out;
+    out << obj;
+    return out.str();
 }
 
 template <class T>
