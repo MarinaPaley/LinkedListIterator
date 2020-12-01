@@ -99,6 +99,11 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other)
 template <class T>
 std::ostream& operator<< (std::ostream& out, const LinkedList<T>& list)
 {
+    if (list.IsEmpty())
+    {
+        return out << "{ }";
+    }
+
     out << "{ ";
     auto current = list.head;
     while (current->next != nullptr)
@@ -106,9 +111,7 @@ std::ostream& operator<< (std::ostream& out, const LinkedList<T>& list)
         out << current->value << ", ";
         current = current->next;
     }
-    return out << current->value
-               << " }"
-               << std::endl;
+    return out << current->value << " }";
 }
 
 template <class T>
