@@ -258,6 +258,7 @@ Iterator<const T> LinkedList<T>::cbegin()
     return Iterator<const T>(reinterpret_cast<ListItem<const T>*>(this->head));
 }
 
+
 template <class T>
 Iterator<const T> LinkedList<T>::cend()
 {
