@@ -23,6 +23,8 @@ std::wistream& operator>>(std::wistream&, LinkedList<Type>&);
 template <class T>
 std::wstring ToString(const LinkedList<T>& obj);
 
+
+
 template <class Type>
 bool operator==(const LinkedList<Type>& lha, const LinkedList<Type>& rha);
 
@@ -234,6 +236,7 @@ std::wstring ToString(const LinkedList<T>& obj)
     out << obj;
     return out.str();
 }
+
 
 template <class T>
 LinkedList<T>::~LinkedList()
