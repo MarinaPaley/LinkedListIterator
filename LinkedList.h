@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <ostream>
 #include <algorithm>
 #include <sstream>
@@ -60,8 +60,7 @@ public:
 
     ~LinkedList();
 
-    T& GetFirst();
-    const T& GetFirst() const;
+    T& GetFirst() const;
     void Add(const T& value);
     LinkedList<T>& AddBack(const T& value);
     void RemoveFirst();
@@ -88,14 +87,15 @@ LinkedList<T>::LinkedList(): head(nullptr), tail(nullptr)
 }
 
 template <class T>
-LinkedList<T>::LinkedList(const LinkedList& list):
-    head(nullptr),tail(nullptr)
+LinkedList<T>::LinkedList(const LinkedList& list)
+    : LinkedList()
 {
     this->CopyElements(list);
 }
 
 template <class T>
 LinkedList<T>::LinkedList(std::initializer_list<T> other)
+    : LinkedList()
 {
    std::for_each(other.begin(), other.end(), [this](const T item) { this->Add(item); });
 }
@@ -114,7 +114,7 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other)
 template <class T>
 bool operator==(LinkedList<T>& lha, LinkedList<T>& rha)
 {
-    // TODO: если |lha| > |rha|, то будет БУМ!
+    // TODO: РµСЃР»Рё |lha| > |rha|, С‚Рѕ Р±СѓРґРµС‚ Р‘РЈРњ!
     return std::equal(lha.begin(), lha.end(), rha.begin());
 }
 
@@ -166,11 +166,11 @@ std::wostream& operator<< (std::wostream& out, const LinkedList<T>& list)
     auto current = list.head;
     while (current->next != nullptr)
     {
-        // TODO: проблема с wostream << string
+        // TODO: РїСЂРѕР±Р»РµРјР° СЃ wostream << string
         out << current->value << L", ";
         current = current->next;
     }
-    // TODO: проблема с wostream << string
+    // TODO: РїСЂРѕР±Р»РµРјР° СЃ wostream << string
     return out << current->value << L" }";
 }
 
@@ -189,14 +189,13 @@ LinkedList<T>::~LinkedList()
 }
 
 template <class T>
-T& LinkedList<T>::GetFirst()
+T& LinkedList<T>::GetFirst() const
 {
-    return this->head->value;
-}
+    if (this->IsEmpty())
+    {
+        throw std::exception("Collection is empty!");
+    }
 
-template <class T>
-const T& LinkedList<T>::GetFirst() const
-{
     return this->head->value;
 }
 

@@ -1,5 +1,8 @@
 ﻿#include "pch.h"
 
+#include <iostream>
+
+
 #include "../LinkedList.h"
 #include "CppUnitTest.h"
 
@@ -95,7 +98,7 @@ namespace Tests
             Assert::AreEqual(expected, buffer.str());
         }
 
-        TEST_METHOD(GetFirst_IntCollection_Success)
+        TEST_METHOD(GetFirst_IntCollection_AreEqualFirstItem)
         {
             //Arrange
             const LinkedList<int> list = { 1, 2, 3 };
@@ -108,12 +111,28 @@ namespace Tests
             Assert::AreEqual(expected, actual);
         }
 
-
-        TEST_METHOD(GetFirst_StringCollection_Success)
+        TEST_METHOD(GetFirst_IntEmptyCollection_Exception)
         {
             //Arrange
-            const LinkedList<std::string> list = { "1", "2", "3" };
-            const std::string expected = "1";
+            const LinkedList<int> empty = { };
+
+            // Act & Assert
+            Assert::ExpectException<std::exception>([&]() { auto item = empty.GetFirst(); });
+        }
+
+        TEST_METHOD(GetFirst_StringEmptyCollection_Exception)
+        {
+            //Arrange
+            const LinkedList<std::string> empty = { };
+
+            // Act & Assert
+            Assert::ExpectException<std::exception>([&]() { auto item = empty.GetFirst(); });
+        }
+        TEST_METHOD(GetFirst_StringCollection_AreEqualFirstItem)
+        {
+            //Arrange
+            const LinkedList<std::wstring> list = { L"1", L"2", L"3" };
+            const std::wstring expected = L"1";
 
             //Act
             const auto &actual = list.GetFirst();
@@ -122,13 +141,13 @@ namespace Tests
             Assert::AreEqual(expected, actual);
         }
 
-        TEST_METHOD(Add_IntCollection_Success)
+        TEST_METHOD(Add_IntCollection_AreEqualAddBack)
 		{
             //Arrange
             LinkedList<int> list = { 1, 2, 3 };
 
             const LinkedList<int> expected = { 1, 2, 3, 4 };
-
+            
             //Act
             list.Add(4);
 
@@ -136,7 +155,19 @@ namespace Tests
             Assert::AreEqual(expected, list);
         }
 
-        TEST_METHOD(Add_StringCollection_Success)
+        TEST_METHOD(Add_IntEmptyCollection_OneIntElementInCollection)
+        {
+            //Arrange
+            LinkedList<int> empty = {};
+            const LinkedList<int> expected = { 1 };
+
+            //Act
+            empty.Add(1);
+            //Assert
+            Assert::AreEqual(expected, empty);
+        }
+
+        TEST_METHOD(Add_StringCollection_AreEqualAddBack)
         {
             // TODO: так как у теста только wostream и есть проблема со string,
             // то нужно использовать wstring вместо string
