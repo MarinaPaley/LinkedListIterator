@@ -4,26 +4,16 @@
 using namespace std;
 
 /**
+ * \brief Демонстрация работы с λ-функциями.
+ */
+void lambdaDemo();
+
+/**
  * \brief Точка входа в программу.
  * \return Код ошибки. 0 -- всё хорошо.
  */
 int main()
 {
-    // DE AD BE EF
-
-    const int value = 42;
-    const int* pointer = &value;
-
-    std::string str = "Hello world!";
-    auto* ptr = &str;
-
-    std::cout << "define lambda:" << std::endl;
-    auto lambda = [](const int item) { std::cout << item << std::endl; };
-
-    std::cout << "invoke lambda:" << std::endl;
-    lambda(42);
-
-    /*
     auto list = LinkedList<int>();
     list.Add(1);
     list.Add(2);
@@ -57,6 +47,23 @@ int main()
         cout << *it << ", ";
     }
     cout << endl;
-    */
+
     return 0;
+}
+
+void lambdaDemo()
+{
+    // DE AD BE EF
+
+    const int value = 42;
+    const int* pointer = &value;
+
+    std::string str = "Hello world!";
+    auto* ptr = &str;
+
+    std::cout << "define lambda:" << std::endl;
+    auto lambda = [](const int item) { std::cout << item << std::endl; };
+
+    std::cout << "invoke lambda:" << std::endl;
+    lambda(42);
 }

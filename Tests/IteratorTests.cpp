@@ -1,19 +1,14 @@
-﻿#include "pch.h"
-
-#include <iostream>
-
-
+﻿#include <iostream>
 #include "../LinkedList.h"
 #include "CppUnitTest.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace Tests
+namespace LinkedListTests
 {
     TEST_CLASS(IteratorTests)
     {
     public:
-
         TEST_METHOD(LeftShiftOperator_EmptyIntCollection_SpaceBetweenCurveBraces)
         {
             //Arrange
@@ -128,6 +123,7 @@ namespace Tests
             // Act & Assert
             Assert::ExpectException<std::exception>([&]() { auto item = empty.GetFirst(); });
         }
+
         TEST_METHOD(GetFirst_StringCollection_AreEqualFirstItem)
         {
             //Arrange
@@ -142,12 +138,12 @@ namespace Tests
         }
 
         TEST_METHOD(Add_IntCollection_AreEqualAddBack)
-		{
+        {
             //Arrange
-            LinkedList<int> list = { 1, 2, 3 };
+            LinkedList<int> list = {1, 2, 3};
 
-            const LinkedList<int> expected = { 1, 2, 3, 4 };
-            
+            const LinkedList<int> expected = {1, 2, 3, 4};
+
             //Act
             list.Add(4);
 

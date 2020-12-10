@@ -80,7 +80,6 @@ private:
     void CopyElements(const LinkedList<T>&);
 };
 
-
 template <class T>
 LinkedList<T>::LinkedList(): head(nullptr), tail(nullptr)
 {
