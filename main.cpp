@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include "LinkedList.h"
 
@@ -8,11 +9,83 @@ using namespace std;
  */
 void lambdaDemo();
 
+template <typename T>
+int file_output_demo(const string& filename, const LinkedList<T>& data);
+
+void old_demo();
+
+void file_output_commented_demo();
+
+void stream_input_demo();
+
+int file_input_demo();
+
 /**
  * \brief Точка входа в программу.
  * \return Код ошибки. 0 -- всё хорошо.
  */
 int main()
+{
+    file_input_demo();
+
+    return 0;
+}
+
+template <typename T>
+int file_output_demo(const string& filename, const LinkedList<T>& data)
+{
+    ofstream out_file(filename.c_str(), ios_base::out);
+
+    if (!out_file.is_open())
+    {
+        cerr << "Error! Unable to open output file: " << filename << endl;
+        // C-style!
+        return -1;
+    }
+
+    out_file << data << endl;
+
+    /*for (auto item : data)
+    {
+        out_file << item << ", ";
+    }*/
+
+    // out_file.flush();
+    out_file.close();
+
+    return 0;
+}
+
+void stream_input_demo()
+{
+    LinkedList<int> tmp;
+    cout << "input list: ";
+    cin >> tmp;
+    cout << "list = " << tmp << ";" << endl;
+}
+
+int file_input_demo()
+{
+    LinkedList<int> tmp;
+    const auto* const filename = "result.txt";
+
+    ifstream in_file(filename, ios_base::in);
+
+    if (!in_file.is_open())
+    {
+        cerr << "Error! Unable to open output file: " << filename << endl;
+        // C-style!
+        return -1;
+    }
+
+    in_file >> tmp;
+
+    in_file.close();
+
+    cout << "list = " << tmp << ";" << endl;
+}
+
+void old_demo()
 {
     auto list = LinkedList<int>();
     list.Add(1);
@@ -47,8 +120,17 @@ int main()
         cout << *it << ", ";
     }
     cout << endl;
+}
 
-    return 0;
+void file_output_commented_demo()
+{
+    const LinkedList<int> tmp = { 1, 2, 3, 4, 5 };
+    cout << tmp << endl;
+
+    const auto code = file_output_demo("result.txt", tmp);
+    cout << "code = " << code << endl;
+
+    cout << "END!" << endl;
 }
 
 void lambdaDemo()

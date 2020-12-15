@@ -1,7 +1,9 @@
 ﻿#pragma once
 #include <ostream>
+#include <string>
 #include <algorithm>
 #include <sstream>
+#include <limits>
 
 template <class T>
 class LinkedList;
@@ -10,7 +12,13 @@ template <class Type>
 std::ostream& operator<<(std::ostream&, const LinkedList<Type>&);
 
 template <class Type>
+std::istream& operator>>(std::istream&, LinkedList<Type>&);
+
+template <class Type>
 std::wostream& operator<<(std::wostream&, const LinkedList<Type>&);
+
+template <class Type>
+std::wistream& operator>>(std::wistream&, LinkedList<Type>&);
 
 template <class T>
 std::wstring ToString(const LinkedList<T>& obj);
@@ -29,6 +37,9 @@ class ListItem
 
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
     friend std::wostream& operator<< <T> (std::wostream&, const LinkedList<T>&);
+
+    friend std::istream& operator>> <T> (std::istream&, LinkedList<T>&);
+    friend std::wistream& operator>> <T> (std::wistream&, LinkedList<T>&);
 
     friend bool operator== <T> (const LinkedList<T>& lha, const LinkedList<T>& rha);
 
@@ -56,6 +67,9 @@ public:
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
     friend std::wostream& operator<< <T> (std::wostream&, const LinkedList<T>&);
 
+    friend std::istream& operator>> <T> (std::istream&, LinkedList<T>&);
+    friend std::wistream& operator>> <T> (std::wistream&, LinkedList<T>&);
+
     friend bool operator== <T> (const LinkedList<T>& lha, const LinkedList<T>& rha);
 
     ~LinkedList();
@@ -80,6 +94,46 @@ private:
     void CopyElements(const LinkedList<T>&);
 };
 
+template <class T>
+std::istream& operator>> (std::istream& in, LinkedList<T>& list)
+{
+    if (in.peek() == '\n' || in.eof())
+    {
+        return in;
+    }
+
+    T value;
+    while (in >> value)
+    {
+        list.Add(value);
+
+        if (in.peek() == '\n' || in.eof())
+        {
+            break;
+        }
+    }
+
+    return in;
+}
+
+template <class T>
+std::wistream& operator>> (std::wistream& in, LinkedList<T>& list)
+{
+    // windows      -> CRLF == \r\n
+    // unix & macOS -> LF   == \n
+    // macOS (<=9)  -> CR   == \n\r
+
+    T value;
+    while (in >> value)
+    {
+        list.Add(value);
+        if (in.peek() == L'\n' || in.eof())
+        {
+            break;
+        }
+    }
+    return in;
+}
 template <class T>
 LinkedList<T>::LinkedList(): head(nullptr), tail(nullptr)
 {
@@ -140,17 +194,17 @@ std::ostream& operator<< (std::ostream& out, const LinkedList<T>& list)
 {
     if (list.IsEmpty())
     {
-        return out << "{ }";
+        return out << " ";
     }
 
-    out << "{ ";
+    //out << "{ ";
     auto current = list.head;
     while (current->next != nullptr)
     {
-        out << current->value << ", ";
+        out << current->value << " ";
         current = current->next;
     }
-    return out << current->value << " }";
+    return out << current->value; // << " }";
 }
 
 template <class T>
@@ -158,19 +212,19 @@ std::wostream& operator<< (std::wostream& out, const LinkedList<T>& list)
 {
     if (list.IsEmpty())
     {
-        return out << L"{ }";
+        return out << L" ";
     }
 
-    out << L"{ ";
+   // out << L"{ ";
     auto current = list.head;
     while (current->next != nullptr)
     {
         // TODO: проблема с wostream << string
-        out << current->value << L", ";
+        out << current->value << L" ";
         current = current->next;
     }
     // TODO: проблема с wostream << string
-    return out << current->value << L" }";
+    return out << current->value; // << L" }";
 }
 
 template <class T>

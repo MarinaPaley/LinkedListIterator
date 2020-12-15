@@ -14,7 +14,7 @@ namespace LinkedListTests
             //Arrange
             const LinkedList<int> emptyList;
             std::stringstream buffer;
-            const std::string expected = "{ }";
+            const std::string expected = " ";
 
             //Act
             buffer << emptyList;
@@ -28,7 +28,7 @@ namespace LinkedListTests
             //Arrange
             const LinkedList<std::string> emptyList;
             std::stringstream buffer;
-            const std::string expected = "{ }";
+            const std::string expected = " ";
 
             //Act
             buffer << emptyList;
@@ -42,7 +42,7 @@ namespace LinkedListTests
             //Arrange
             const LinkedList<int> list = { 1 };
             std::stringstream buffer;
-            const std::string expected = "{ 1 }";
+            const std::string expected = "1";
 
             //Act
             buffer << list;
@@ -56,7 +56,7 @@ namespace LinkedListTests
             //Arrange
             const LinkedList<std::string> list = { "1" };
             std::stringstream buffer;
-            const std::string expected = "{ 1 }";
+            const std::string expected = "1";
 
             //Act
             buffer << list;
@@ -70,7 +70,7 @@ namespace LinkedListTests
             //Arrange
             const LinkedList<int> list = { 1, 2, 3 };
             std::stringstream buffer;
-            const std::string expected = "{ 1, 2, 3 }";
+            const std::string expected = "1 2 3";
 
             //Act
             buffer << list;
@@ -84,7 +84,7 @@ namespace LinkedListTests
             //Arrange
             const LinkedList<std::string> list = { "1", "2", "3" };
             std::stringstream buffer;
-            const std::string expected = "{ 1, 2, 3 }";
+            const std::string expected = "1 2 3";
 
             //Act
             buffer << list;
@@ -155,10 +155,12 @@ namespace LinkedListTests
         {
             //Arrange
             LinkedList<int> empty = {};
+
             const LinkedList<int> expected = { 1 };
 
             //Act
             empty.Add(1);
+
             //Assert
             Assert::AreEqual(expected, empty);
         }
