@@ -26,6 +26,8 @@ int file_input_demo();
  */
 int main()
 {
+    file_output_commented_demo();
+
     file_input_demo();
 
     return 0;
