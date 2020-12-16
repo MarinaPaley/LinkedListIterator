@@ -1,12 +1,30 @@
-#pragma once
+﻿#pragma once
 #include <ostream>
+#include <string>
 #include <algorithm>
+#include <sstream>
+#include <limits>
 
 template <class T>
 class LinkedList;
 
 template <class Type>
 std::ostream& operator<<(std::ostream&, const LinkedList<Type>&);
+
+template <class Type>
+std::istream& operator>>(std::istream&, LinkedList<Type>&);
+
+template <class Type>
+std::wostream& operator<<(std::wostream&, const LinkedList<Type>&);
+
+template <class Type>
+std::wistream& operator>>(std::wistream&, LinkedList<Type>&);
+
+template <class T>
+std::wstring ToString(const LinkedList<T>& obj);
+
+template <class Type>
+bool operator==(const LinkedList<Type>& lha, const LinkedList<Type>& rha);
 
 template <class T>
 class Iterator;
@@ -18,6 +36,12 @@ class ListItem
     friend class Iterator<T>;
 
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
+    friend std::wostream& operator<< <T> (std::wostream&, const LinkedList<T>&);
+
+    friend std::istream& operator>> <T> (std::istream&, LinkedList<T>&);
+    friend std::wistream& operator>> <T> (std::wistream&, LinkedList<T>&);
+
+    friend bool operator== <T> (const LinkedList<T>& lha, const LinkedList<T>& rha);
 
     explicit ListItem(const T& value);
     T value;
@@ -41,12 +65,16 @@ public:
     LinkedList<T>& operator= (const LinkedList<T>& other);
 
     friend std::ostream& operator<< <T> (std::ostream&, const LinkedList<T>&);
+    friend std::wostream& operator<< <T> (std::wostream&, const LinkedList<T>&);
 
+    friend std::istream& operator>> <T> (std::istream&, LinkedList<T>&);
+    friend std::wistream& operator>> <T> (std::wistream&, LinkedList<T>&);
+
+    friend bool operator== <T> (const LinkedList<T>& lha, const LinkedList<T>& rha);
 
     ~LinkedList();
 
-    T& GetFirst();
-    const T& GetFirst() const;
+    T& GetFirst() const;
     void Add(const T& value);
     LinkedList<T>& AddBack(const T& value);
     void RemoveFirst();
@@ -66,21 +94,61 @@ private:
     void CopyElements(const LinkedList<T>&);
 };
 
+template <class T>
+std::istream& operator>> (std::istream& in, LinkedList<T>& list)
+{
+    if (in.peek() == '\n' || in.eof())
+    {
+        return in;
+    }
 
+    T value;
+    while (in >> value)
+    {
+        list.Add(value);
+
+        if (in.peek() == '\n' || in.eof())
+        {
+            break;
+        }
+    }
+
+    return in;
+}
+
+template <class T>
+std::wistream& operator>> (std::wistream& in, LinkedList<T>& list)
+{
+    // windows      -> CRLF == \r\n
+    // unix & macOS -> LF   == \n
+    // macOS (<=9)  -> CR   == \n\r
+
+    T value;
+    while (in >> value)
+    {
+        list.Add(value);
+        if (in.peek() == L'\n' || in.eof())
+        {
+            break;
+        }
+    }
+    return in;
+}
 template <class T>
 LinkedList<T>::LinkedList(): head(nullptr), tail(nullptr)
 {
 }
 
 template <class T>
-LinkedList<T>::LinkedList(const LinkedList& list):
-    head(nullptr),tail(nullptr)
+LinkedList<T>::LinkedList(const LinkedList& list)
+    : LinkedList()
 {
     this->CopyElements(list);
 }
 
 template <class T>
 LinkedList<T>::LinkedList(std::initializer_list<T> other)
+    : LinkedList()
 {
    std::for_each(other.begin(), other.end(), [this](const T item) { this->Add(item); });
 }
@@ -97,18 +165,74 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& other)
 }
 
 template <class T>
+bool operator==(LinkedList<T>& lha, LinkedList<T>& rha)
+{
+    // TODO: если |lha| > |rha|, то будет БУМ!
+    return std::equal(lha.begin(), lha.end(), rha.begin());
+}
+
+template <class T>
+bool operator==(const LinkedList<T>& lha, const LinkedList<T>& rha)
+{
+    auto current_lha = lha.head;
+    auto current_rha = rha.head;
+    while (current_lha != nullptr && current_rha != nullptr)
+    {
+        if (current_lha->value != current_rha->value)
+        {
+            return false;
+        }
+
+        current_lha = current_lha->next;
+        current_rha = current_rha->next;
+    }
+    return current_lha == current_rha;
+}
+
+template <class T>
 std::ostream& operator<< (std::ostream& out, const LinkedList<T>& list)
 {
-    out << "{ ";
+    if (list.IsEmpty())
+    {
+        return out << " ";
+    }
+
+    //out << "{ ";
     auto current = list.head;
     while (current->next != nullptr)
     {
-        out << current->value << ", ";
+        out << current->value << " ";
         current = current->next;
     }
-    return out << current->value
-               << " }"
-               << std::endl;
+    return out << current->value; // << " }";
+}
+
+template <class T>
+std::wostream& operator<< (std::wostream& out, const LinkedList<T>& list)
+{
+    if (list.IsEmpty())
+    {
+        return out << L" ";
+    }
+
+   // out << L"{ ";
+    auto current = list.head;
+    while (current->next != nullptr)
+    {
+        // TODO: проблема с wostream << string
+        out << current->value << L" ";
+        current = current->next;
+    }
+    // TODO: проблема с wostream << string
+    return out << current->value; // << L" }";
+}
+
+template <class T>
+std::wstring ToString(const LinkedList<T>& obj)
+{
+    std::wstringstream out;
+    out << obj;
+    return out.str();
 }
 
 template <class T>
@@ -118,14 +242,13 @@ LinkedList<T>::~LinkedList()
 }
 
 template <class T>
-T& LinkedList<T>::GetFirst()
+T& LinkedList<T>::GetFirst() const
 {
-    return this->head->value;
-}
+    if (this->IsEmpty())
+    {
+        throw std::exception("Collection is empty!");
+    }
 
-template <class T>
-const T& LinkedList<T>::GetFirst() const
-{
     return this->head->value;
 }
 
@@ -186,6 +309,7 @@ Iterator<const T> LinkedList<T>::cbegin()
 {
     return Iterator<const T>(reinterpret_cast<ListItem<const T>*>(this->head));
 }
+
 
 template <class T>
 Iterator<const T> LinkedList<T>::cend()
